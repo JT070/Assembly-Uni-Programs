@@ -1,0 +1,120 @@
+Datos MACRO
+	Cad01 db 10,13, 'TREJO RODRIGUEZ JAVIER ENRIQUE ICO O-6$' 
+	Cad02 db 10,13,10,13, 'Introduce un numero:  $'
+	Cad03 db 10,13,10,13, 'El numero introducido fue:  $'
+	Mult dw 1
+	MultD dw 10
+	Contador dw 0
+	Acumulador dw 0
+	ArNumero dw 100 dup(0)
+	ArNum dw 100 dup(0)
+	ArmuN dw 100 dup(0)
+	ArMul dw 100 dup(0)
+	ArMultiplicador dw 100 dup(0)
+ENDM
+
+Cargar MACRO
+	mov dx,@DATA
+	mov ds,dx
+ENDM
+
+Imprime MACRO Cad01, Cad02
+	lea dx,Cad01  ;Imprime mi nombre
+	mov ah,09h
+	int 21h
+	
+	lea dx,Cad02  ;Introduce numero:
+	mov ah,09h
+	int 21h
+ENDM
+
+Limpia_SIDICX MACRO si,di,cx
+	xor si,si      ;Limpia todo alv
+	xor di,di
+	xor cx,cx
+ENDM
+
+Limpia_AB MACRO ax, bx
+	mov bx, 00h		;limpia
+	mov ax, 00h	
+ENDM
+
+Limpia_Todo MACRO si,di,cx,ax,bx
+	xor si,si 
+	xor di,di
+	xor cx,cx
+	mov bx, 00h	
+	mov ax, 00h	
+ENDM
+
+LeerMac MACRO ax,bx,cx,si
+	sub al, 30h  
+	mov ah,00h
+	mov [si],al	
+	mov ax,00h
+	mov bx,00h	
+	add si,2
+	inc cx	
+	mov contador,00h  
+	mov contador,cx
+ENDM
+
+Invertir MACRO ax,si,di
+	sub si,2
+	mov ax,[si]
+	mov [di],ax
+	add di,2
+ENDM
+
+LlenaArregloMultiplicadorMacro MACRO Mult,MultD,ax,bx,si     
+	mov bx,Mult				  
+	mov [si],bx				   
+	mov bx,00h	
+	mov ax, Mult
+	mul MultD
+	mov ax,ax
+	mov Mult,ax
+	add si,2
+ENDM
+
+SacarYMultiplicarMacro MACRO ax,bx,si,di,Acumulador		
+	mov bx,[si]				
+	mov ax,[di]					
+	mul bx						
+	mov ax,ax	
+	mov [di],ax	
+	add Acumulador,ax	
+	add si,2
+	add di,2	
+	mov ax,00h
+	mov bx,00h
+ENDM
+
+DivideySumaMacro MACRO ax,bx,dx,si,di,Acumulador
+	mov ax,Acumulador    
+	mov bx,[si] 		 		
+	div bx	
+	mov ax,ax
+	mov bx,dx							
+	mov Acumulador,00h		
+	mov Acumulador,bx		
+	add ax,30h
+	mov [di],ax			
+	add si,2
+	inc di	
+	mov ax,00h
+	mov bx,00h
+	mov dx,00h
+ENDM
+
+ImprimeResultado MACRO ax,dx,Cad03,ArNumero
+	mov dx, offset Cad03 
+	mov ah, 09h
+	int 21h		
+	mov dx, offset ArNumero  
+	mov ah,09h
+	int 21h
+	
+	mov ax, 4c00h
+	int 21h
+ENDM
